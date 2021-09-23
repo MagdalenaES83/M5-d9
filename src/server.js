@@ -29,7 +29,7 @@ const whiteList = ["http://localhost:3000"]; //host for FE
 //     }
 //   },
 // };
-
+//
 // server.use(cors(corsOptions));
 server.use(cors())
 server.use(express.json());

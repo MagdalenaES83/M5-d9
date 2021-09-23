@@ -176,7 +176,7 @@ router.put(
   }
 );
 
-router.post("/newpostconfirmation", async (req, res, next) => {
+router.post("/sendmail", async (req, res, next) => {
   try {
     
     const { email } = req.body
