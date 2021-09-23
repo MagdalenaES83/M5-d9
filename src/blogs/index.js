@@ -1,13 +1,11 @@
 import express from "express";
-
 import fs from "fs";
-
 import uniqid from "uniqid";
-
 import path, { dirname } from "path";
-
 import { fileURLToPath } from "url";
 import { parseFile } from "../utils/upload/index.js";
+import json2csv from "json2csv"
+import { sendEmail } from "../../lib/email.js"
 
 import {
   checkBlogPostSchema,
@@ -17,12 +15,12 @@ import {
 } from "./validation.js";
 import { generateBlogPDF } from "../utils/pdf/index.js";
 
+
+
+
 const __filename = fileURLToPath(import.meta.url);
-
 const __dirname = dirname(__filename);
-
 const blogsFilePath = path.join(__dirname, "blogs.json");
-
 const router = express.Router();
 
 // get all blogs
@@ -36,6 +34,26 @@ router.get("/", async (req, res, next) => {
     res.send(500).send({ message: error.message });
   }
 });
+
+
+//Json into CSV file
+router.get("/csv_download" , async (req, res, next) => {
+  try {
+    res.setHeader("Content-Disposition", `attachment; filename=blogs.csv`)
+    const source = getBooksReadableStream()
+    const transform = new json2csv.Transform({ fields: ["id", "category", "title", "content", "cover", "readTime", "author" ] })
+    const destination = res
+
+
+    pipeline(source, transform, destination, err => {
+      if (err) next(err)
+    })
+  
+
+  }catch (error) {
+    next(error)
+  }})
+
 
 router.get(
   "/search",

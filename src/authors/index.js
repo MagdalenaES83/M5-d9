@@ -1,22 +1,18 @@
 import express from "express";
-
 import fs from "fs";
-
 import uniqid from "uniqid";
-
 import path, { dirname } from "path";
-
 import { fileURLToPath } from "url";
-
 import { parseFile } from "../utils/upload/index.js";
+import { sendEmail } from "../utils/email/email"
+
 
 const __filename = fileURLToPath(import.meta.url);
-
 const __dirname = dirname(__filename);
-
 const authorsFilePath = path.join(__dirname, "authors.json");
-
 const router = express.Router();
+
+
 
 // get all authors
 router.get("/", async (req, res, next) => {
@@ -179,5 +175,17 @@ router.put(
     }
   }
 );
+
+router.post("/newpostconfirmation", async (req, res, next) => {
+  try {
+    
+    const { email } = req.body
+
+    await sendEmail(email)
+    res.send("Email sent!")
+  } catch (error) {
+    next(error)
+  }
+})
 
 export default router;
